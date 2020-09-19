@@ -14,6 +14,14 @@ export enum Gender {
   Other = "other"
 }
 
+type DistributiveOmit<T, K extends keyof any> = T extends any
+  ? Omit<T, K>
+  : never;
+
+export type NewBaseEntry = Omit<BaseEntry, "id">;
+
+export type NewEntry = DistributiveOmit<Entry, "id">;
+
 export enum EntryType {
   HealthCheck = "HealthCheck",
   OccupationalHealthCare = "OccupationalHealthcare",
@@ -38,6 +46,7 @@ export interface Diagnosis {
 }
 interface BaseEntry {
   id: string;
+  type: EntryType;
   description: string;
   date: string;
   specialist: string;

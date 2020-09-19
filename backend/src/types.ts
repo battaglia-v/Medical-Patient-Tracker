@@ -5,6 +5,7 @@ export interface Diagnosis {
 }
 interface BaseEntry {
   id: string;
+  type: EntryType;
   description: string;
   date: string;
   specialist: string;
@@ -18,7 +19,7 @@ export enum HealthCheckRating {
   "CriticalRisk" = 3
 }
 interface HealthCheckEntry extends BaseEntry {
-  type: "HealthCheck";
+  type: EntryType.HealthCheck;
   healthCheckRating: HealthCheckRating;
 }
 
@@ -28,7 +29,7 @@ export interface SickLeave {
 }
 
 interface OccupationalHealthcareEntry extends BaseEntry {
-  type: "OccupationalHealthcare";
+  type: EntryType.OccupationalHealthCare;
   employerName: string;
   sickLeave?: SickLeave;
 }
@@ -37,9 +38,23 @@ export interface Discharge {
   criteria: string;
 }
 
+export type DistributiveOmit<T, K extends keyof any> = T extends any
+  ? Omit<T, K>
+  : never;
+
+export type NewBaseEntry = Omit<BaseEntry, "id">;
+
+export type NewEntry = DistributiveOmit<Entry, "id">;
+
 interface HospitalEntry extends BaseEntry {
-  type: "Hospital";
+  type: EntryType.Hospital;
   discharge: Discharge;
+}
+
+export enum EntryType {
+  HealthCheck = "HealthCheck",
+  OccupationalHealthCare = "OccupationalHealthcare",
+  Hospital = "Hospital",
 }
 
 export type Entry =

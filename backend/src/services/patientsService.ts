@@ -1,12 +1,21 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import patients from '../../data/patients';
 
-import { NonSensitivePatientEntry, NewPatient, Patient } from '../types';
+import { NonSensitivePatientEntry, NewPatient, Patient, Entry, NewEntry } from '../types';
+import { v4 as uuid } from 'uuid';
+
+let allPatients = [...patients];
+
+const findById = (id: string): Patient | undefined => {
+    const patient = allPatients.find(p => p.id === id);
+    return patient;
+    };
 
 const getPatients = (): NonSensitivePatientEntry[] => {
-    console.log(patients);
-    return patients.map(({ id, name, dateOfBirth, gender, occupation, entries }) => ({
+  
+    return allPatients.map(({ id, name, dateOfBirth, gender, occupation, entries }) => ({
         id,
         name,
         dateOfBirth,
@@ -18,23 +27,31 @@ const getPatients = (): NonSensitivePatientEntry[] => {
 
 console.log(getPatients);
 
-const addEntry = ( patient: NewPatient): Patient => {
+const addPatient = ( patient: NewPatient): Patient => {
     const newPatient = {
         ...patient,
-        id: 'd2773336-f723-11e9-8f0b-362b9e155667',
-        entries: []
+        id: uuid(),
+        entries: [] as Entry[]
     };
-    patients.push(newPatient);
+    allPatients = allPatients.concat(newPatient);
     return newPatient;
     };
 
-const findById = (id: string): Patient | undefined => {
-    const patient = patients.find(p => p.id === id);
-    return patient;
-    };
+const addEntry = (patient: Patient, newEntry: NewEntry): Patient => {
+    const entry:Entry = {...newEntry, id: uuid() };
+        const savedPatient = {...patient, entries: patient.entries.concat(entry) };
+        allPatients = allPatients.map((p) => (p.id === savedPatient.id ? savedPatient : p));
+
+        return savedPatient;
+};
+
+
+
+
 
 export default {
     getPatients,
     addEntry,
-    findById
+    findById,
+    addPatient
     };
