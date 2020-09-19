@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NewPatientEntry, Gender } from './types';
+import { NewPatient, Gender } from './types';
 
 const isString = (text: any): text is string => {
     return typeof text === 'string' || text instanceof String;
@@ -11,6 +11,7 @@ const isString = (text: any): text is string => {
 const isGender = (param: any): param is Gender => {
     return Object.values(Gender).includes(param);
 };
+
 
 const parseName = (name: any): string => {
     if (!name || !isString(name)) {
@@ -40,6 +41,14 @@ const parseBirthDate = (dateOfBirth: any): string => {
     return dateOfBirth;
 };
 
+// const isArrayOfEntries = (param: any[]): param is Entry[] => {
+//     const hasInvalidEntry = param.some((entry) => {
+//       return !Object.values(EntryType).includes(entry.type);
+//     });
+  
+//     return !hasInvalidEntry;
+//   };
+
 const parseGender = (gender: any): Gender => {
     if (!gender || !isGender(gender)) {
         throw new Error(`Incorrect or missing 'gender': ${gender}`);
@@ -47,13 +56,20 @@ const parseGender = (gender: any): Gender => {
     return gender;
 };
 
-const toNewPatientEntry = (object: any): NewPatientEntry => {
+// export const parseEntries = (entries: any): Entry[] => {
+//     if (!entries || !Array.isArray(entries) || !isArrayOfEntries(entries)) {
+//       throw new Error(`Incorrect or missing entries: ${JSON.stringify(entries)}`);
+//     }
+//     return entries;
+//   };
+
+export const toNewPatientEntry = (object: any): NewPatient => {
     return {
         name: parseName(object.name),
         dateOfBirth: parseBirthDate(object.dateOfBirth),
         occupation: parseOccupation(object.occupation),
         gender: parseGender(object.gender),
-        ssn: parseSSN(object.ssn)
+        ssn: parseSSN(object.ssn),
     };
 };
 

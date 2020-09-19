@@ -1,10 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import express from 'express';
+import cors from 'cors';
 
 import diagnosesRouter from './routes/diagnoses';
 import patientsRouter from './routes/patients';
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 const PORT = 3001;
 

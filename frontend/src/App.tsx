@@ -4,27 +4,41 @@ import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import { Button, Divider, Header, Container } from "semantic-ui-react";
 
 import { apiBaseUrl } from "./constants";
-import { useStateValue } from "./state";
-import { Patient } from "./types";
+import { useStateValue, setPatientList, setDiagnosis } from "./state";
+import { Patient, Diagnosis } from "./types";
 
 import PatientListPage from "./PatientListPage";
+import PatientDetailsPage from "./PatientDetailsPage";
 
 const App: React.FC = () => {
   const [, dispatch] = useStateValue();
-  React.useEffect(() => {
-    axios.get<void>(`${apiBaseUrl}/ping`);
 
+  React.useEffect(() => {
     const fetchPatientList = async () => {
       try {
         const { data: patientListFromApi } = await axios.get<Patient[]>(
           `${apiBaseUrl}/patients`
         );
-        dispatch({ type: "SET_PATIENT_LIST", payload: patientListFromApi });
+        dispatch(setPatientList(patientListFromApi));
       } catch (e) {
         console.error(e);
       }
     };
     fetchPatientList();
+  }, [dispatch]);
+
+  React.useEffect(() => {
+    const fetchDiagnosisList = async () => {
+      try {
+        const { data: diagnosisListFromApi } = await axios.get<Diagnosis[]>(
+          `${apiBaseUrl}/diagnoses`
+        );
+        dispatch(setDiagnosis(diagnosisListFromApi));
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    fetchDiagnosisList();
   }, [dispatch]);
 
   return (
@@ -37,7 +51,12 @@ const App: React.FC = () => {
           </Button>
           <Divider hidden />
           <Switch>
-            <Route path="/" render={() => <PatientListPage />} />
+            <Route path="/" exact>
+            <PatientListPage />
+            </Route>
+            <Route path="/patients/:id">
+            <PatientDetailsPage />
+            </Route>
           </Switch>
         </Container>
       </Router>

@@ -1,34 +1,40 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import patients from '../../data/patients';
 
-import { NonSensitivePatientEntry, PatientEntry, NewPatientEntry } from '../types';
+import { NonSensitivePatientEntry, NewPatient, Patient } from '../types';
 
-const getPatients = (): Array<PatientEntry> => {
-    return patients;
-};
-
-const getNonSensitiveEntries = (): NonSensitivePatientEntry[] => {
-    return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
+const getPatients = (): NonSensitivePatientEntry[] => {
+    console.log(patients);
+    return patients.map(({ id, name, dateOfBirth, gender, occupation, entries }) => ({
         id,
         name,
         dateOfBirth,
         gender,
         occupation,
-        
+        entries
     }));
 };
 
-const addEntry = ( entry: NewPatientEntry): PatientEntry => {
-    const newPatientEntry = {
+console.log(getPatients);
+
+const addEntry = ( patient: NewPatient): Patient => {
+    const newPatient = {
+        ...patient,
         id: 'd2773336-f723-11e9-8f0b-362b9e155667',
-        ...entry
+        entries: []
+    };
+    patients.push(newPatient);
+    return newPatient;
     };
 
-    patients.push(newPatientEntry);
-    return newPatientEntry;
-   };
+const findById = (id: string): Patient | undefined => {
+    const patient = patients.find(p => p.id === id);
+    return patient;
+    };
 
 export default {
     getPatients,
-    getNonSensitiveEntries,
-    addEntry
-};
+    addEntry,
+    findById
+    };
